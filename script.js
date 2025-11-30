@@ -15,17 +15,54 @@ var SECUENCIA_COLORES = [];
 var RONDAS_TOTALES = 12;
 
 var clicksRonda = [];
-var rondasCompletas = 0;
-var rondaComenzada = false;
-var rondaTerminada = false;
-var mensajeActivo = false;
 var clicksEnTexto = 0;
+
+var rondasCompletas = 0;
+var rondaComenzada = false; // Detectar si la ronda ha comenzado para comenzar o no a guardar los colores clickeados.
+var rondaTerminada = false; // Detectar si el numero de clicks a los colores que el jugador ha dado en una ronda, es el mismo que el numero de colores que contiene esa ronda.
+
+var mensajeActivo = false;
+
 var pantalla = document.getElementById('pantalla');
 var coloresClickeados = document.querySelectorAll(".color");
 var botonComenzarPartida = document.getElementById('empezar');
 
 // MÉTODOS
 // 1. Funciones
+function guardarRondasCompletadas(nRondasActual) 
+{
+    // VARIABLES
+    var nRondasAnterior;
+    var nRondasTransformado;
+
+    // INICIALIZACIÓN
+    nRondasAnterior = JSON.parse(localStorage.getItem("record"));
+    nRondasTransformado = JSON.stringify(nRondasActual - 1);
+
+    // PROCESO
+    // Guardar el record de rondas completadas en el LocalStorage
+    if (nRondasActual > nRondasAnterior) localStorage.setItem("record", nRondasTransformado);
+    else console.log("El record sigue sin haber sido superado.");
+}
+
+function cargarRecordRondas()
+{
+    // VARIABLES
+    var recordRondas;
+    var recordUi;
+
+    // INICIALIZACIÓN
+    if (localStorage.getItem("record") == null) localStorage.setItem("record", "0");
+    recordRondas = localStorage.getItem("record");
+
+    recordUi = document.getElementById('record');
+
+    // PROCESO
+    recordUi.textContent = recordRondas;
+}
+
+cargarRecordRondas(); // Cargar el record de rondas máximas completadas.
+
 function func() 
 {  
   return 0.5 - Math.random();
@@ -137,10 +174,11 @@ function detectarClicksColores(colorTocado)
             setTimeout(() => {
                 // Restauración de variables
                 hayPartidaComenzada = false;
+                guardarRondasCompletadas(rondasCompletas);
                 rondasCompletas = 0;
                 COLORES_POR_RONDA = [];
-
                 restaurarElementosRonda();
+                cargarRecordRondas();
             }, 1000)
             return;
         }
