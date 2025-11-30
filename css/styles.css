@@ -2,6 +2,13 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+header {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    height: 100px;
+}
+
 #titulo {
     text-align: center;
     font-size: 40px;
@@ -9,7 +16,38 @@
     text-decoration: underline;
 }
 
+#divtitulo {
+    width: 76%;
+    justify-content: center;
+    position: absolute;
+    top: 0px;
+}
+
+#divrecord {
+    width: 95px;
+    display: flex;
+    border-style: solid;
+    border-color: black;
+    padding: 4px;
+    border-width: 2px;
+    position: absolute;
+    left: 10px;
+}
+
+#divnumeroclicks {
+    width: 12%;
+}
+
+#textorecord {
+    margin-right: 5px;
+}
+
+main {
+    justify-items: center;
+}
+
 #pantallas, #colores {
+    width: 100%;
     display: flex;
     justify-content: center;
 }
@@ -19,15 +57,20 @@
     justify-items: center;
 }
 
-.pantalla {
+#pantalla {
     background-color: gray;
-    width: 650px;
+    width: 680px;
     height: 550px;
     border-style: solid;
     border-color: black;
     border-width: 3px;
     border-radius: 5px;
     margin: 5px;
+
+    font-size: 80px;
+    font-weight: 1000;
+    text-align: center;
+    align-content: center;
 }
 
 .color {
@@ -69,7 +112,7 @@
 }
 
 .marron {
-    background-color: brown;
+    background-color: rgb(165, 91, 42);
 }
 
 #empezar {
@@ -86,30 +129,36 @@
     background-color: aliceblue;
 }
 
-@media screen and (min-width: 360px) {
-    .pantalla {
+@media screen and (max-width: 430px) {
+    #pantalla {
         margin-top: -10px;
-        width: 300px;
+        max-width: 320px;
+        width: 100%;
         height: 170px;
+        font-size: 50px;
+    }
+
+    header {
+        height: 160px;
     }
     
     .color {
-        width: 90px;
+        max-width: 90px;
+        width: 100%;
         height: 90px;
-        margin: 0px;
-        margin-top: 5px;
     }
     
     #colores {
+        margin-top: 5px;
         justify-items: center;
         display: grid;
-        grid-template-columns: 90px 90px 90px;
-        grid-template-rows: 90px 90px 90px;
-        grid-gap: 10px;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-gap: 1px;
     }
     
     #titulo {
-        margin-top: 10px;
+        margin-top: 40px;
     }
     
     #empezar {
