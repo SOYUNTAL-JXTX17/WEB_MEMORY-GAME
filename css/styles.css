@@ -2,9 +2,10 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1 {
+#titulo {
     text-align: center;
     font-size: 40px;
+    font-weight: 1000;
     text-decoration: underline;
 }
 
@@ -83,4 +84,35 @@ h1 {
 
 #empezar:hover {
     background-color: aliceblue;
+}
+
+@media screen and (min-width: 360px) {
+    .pantalla {
+        margin-top: -10px;
+        width: 300px;
+        height: 170px;
+    }
+    
+    .color {
+        width: 90px;
+        height: 90px;
+        margin: 0px;
+        margin-top: 5px;
+    }
+    
+    #colores {
+        justify-items: center;
+        display: grid;
+        grid-template-columns: 90px 90px 90px;
+        grid-template-rows: 90px 90px 90px;
+        grid-gap: 10px;
+    }
+    
+    #titulo {
+        margin-top: 10px;
+    }
+    
+    #empezar {
+        margin-top: 40px;
+    }
 }
