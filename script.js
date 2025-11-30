@@ -1,8 +1,15 @@
 // VARIABLES
 var hayPartidaComenzada = false;
 
-var COLORES = ["rgb(255, 0, 0)", "rgb(0, 128, 0)", "rgb(255, 255, 0)", "rgb(0, 0, 255)", "rgb(128, 0, 128)", "rgb(255, 192, 203)", "rgb(255, 165, 0)", "rgb(165, 42, 42)"];
-var COLORES_POR_RONDA = [2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 8];
+var COLORES = ["rgb(255, 0, 0)",
+    "rgb(0, 128, 0)",
+    "rgb(255, 255, 0)",
+    "rgb(0, 0, 255)",
+    "rgb(128, 0, 128)",
+    "rgb(255, 192, 203)",
+    "rgb(255, 165, 0)",
+    "rgb(165, 91, 42)"];
+var COLORES_POR_RONDA = [];
 var SECUENCIA_COLORES = [];
 
 var RONDAS_TOTALES = 12;
@@ -13,8 +20,7 @@ var rondaComenzada = false;
 var rondaTerminada = false;
 var mensajeActivo = false;
 var clicksEnTexto = 0;
-
-var pantallas = document.querySelectorAll(".pantalla");
+var pantalla = document.getElementById('pantalla');
 var coloresClickeados = document.querySelectorAll(".color");
 var botonComenzarPartida = document.getElementById('empezar');
 
@@ -44,9 +50,43 @@ function restaurarElementosRonda()
 function generarSecuenciaColores() 
 {
     rondasCompletas++;
+    COLORES_POR_RONDA.push(rondasCompletas);
     COLORES = COLORES.sort(func);
     for (i = 0; i < COLORES_POR_RONDA[rondasCompletas - 1]; i++) {
         SECUENCIA_COLORES.push(COLORES[i]);
+    }
+};
+
+function mostrarNombreColor(nombreColor) {
+    switch (nombreColor)
+    {
+        case "rgb(255, 0, 0)":
+            pantalla.textContent = "ROJO";
+            break;
+        case "rgb(0, 128, 0)":
+            pantalla.textContent = "VERDE";
+            break;
+        case "rgb(255, 255, 0)":
+            pantalla.textContent = "AMARILLO";
+            break;
+        case "rgb(0, 0, 255)":
+            pantalla.textContent = "AZUL";
+            break;
+        case "rgb(128, 0, 128)":
+            pantalla.textContent = "MORADO";
+            break;
+        case "rgb(255, 192, 203)":
+            pantalla.textContent = "ROSA";
+            break;
+        case "rgb(255, 165, 0)":
+            pantalla.textContent = "NARANJA";
+            break;
+        case "rgb(165, 91, 42)":
+            pantalla.textContent = "MARRON";
+            break;
+        case "gray":
+            pantalla.textContent = "";
+            break;
     }
 };
 
@@ -57,9 +97,8 @@ function mostrarColoresPantalla()
 
     intervaloColoresPantalla = setInterval(() => {
         contador++;
-        pantallas.forEach((pantallaColor) => {
-            pantallaColor.style.backgroundColor = `${SECUENCIA_COLORES[contador - 1]}`;
-        });
+        pantalla.style.backgroundColor = `${SECUENCIA_COLORES[contador - 1]}`;
+        mostrarNombreColor(`${SECUENCIA_COLORES[contador - 1]}`);
 
         if (contador >= SECUENCIA_COLORES.length) {
             clearInterval(intervaloColoresPantalla);
@@ -67,9 +106,8 @@ function mostrarColoresPantalla()
             setTimeout(() => {
                 rondaComenzada = true;
                 CrearMensajeFlotante("gold", `RONDA ${rondasCompletas} HA COMENZADO`, 1);
-                pantallas.forEach((pantallaColor) => {
-                    pantallaColor.style.backgroundColor = "gray";
-                });
+                pantalla.style.backgroundColor = "gray";
+                mostrarNombreColor("gray");
             }, 1000);
         }
     }, 1000);
@@ -78,6 +116,7 @@ function mostrarColoresPantalla()
 function detectarClicksColores(colorTocado) 
 {
     if (clicksRonda.length == SECUENCIA_COLORES.length - 1) {
+        ActualizarNumeroClicks();
         clicksRonda.push(colorTocado);
         rondaTerminada = true;
 
@@ -94,15 +133,22 @@ function detectarClicksColores(colorTocado)
         
         if (!correcto(clicksRonda, SECUENCIA_COLORES)) {
             CrearMensajeFlotante("red", "HAS FALLADO", 1);
-            hayPartidaComenzada = false;
-            rondasCompletas = 0;
-            restaurarElementosRonda();
+
+            setTimeout(() => {
+                // Restauración de variables
+                hayPartidaComenzada = false;
+                rondasCompletas = 0;
+                COLORES_POR_RONDA = [];
+
+                restaurarElementosRonda();
+            }, 1000)
             return;
         }
         return;
     } 
     
     if (!rondaTerminada) {
+        ActualizarNumeroClicks();
         clicksRonda.push(colorTocado);
         return;
     }
@@ -118,41 +164,53 @@ function generarRonda()
 // 2. Constructores
 function CrearMensajeFlotante(color, texto, segundosVisible)
 {
-    // VARIABLES
+    // ENTRADA
+    var ventana = document.createElement("div");
+    ventana.setAttribute("class", "ventanaflotante");
+    ventana.textContent = texto;
+    ventana.style.textAlign = "center";
+    ventana.style.fontSize = "20px";
+    ventana.style.alignContent = "center";
+    ventana.style.color = "black";
+    ventana.style.backgroundColor = color;
+    ventana.style.justifySelf = "center";
+    ventana.style.bottom = "20px";
+    ventana.style.right = "20px";
+    ventana.style.borderStyle = "solid";
+    ventana.style.borderColor = "black";
+    ventana.style.borderWidth = "3px";
+    ventana.style.borderRadius = "12px";
+    ventana.style.width = "300px";
+    ventana.style.height = "50px";
+    ventana.style.position = "absolute";
+
+    // PROCESO - SALIDA
+    segundosVisible = segundosVisible * 1000;
+    document.body.appendChild(ventana);
+
+    setTimeout(() => {
+        document.body.removeChild(ventana);
+    }, segundosVisible);
+};
+
+function CrearMensajeClick(color, texto, segundosVisible)
+{
     if (!mensajeActivo)
     {
-        segundosVisible = segundosVisible * 1000;
-        // ENTRADA
-        var ventana = document.createElement("div");
-        ventana.setAttribute("class", "ventanaflotante");
-        ventana.textContent = texto;
-        ventana.style.textAlign = "center";
-        ventana.style.fontSize = "20px";
-        ventana.style.alignContent = "center";
-        ventana.style.color = "black";
-        ventana.style.backgroundColor = color;
-        ventana.style.justifySelf = "center";
-        ventana.style.bottom = "50px";
-        ventana.style.borderStyle = "solid";
-        ventana.style.borderColor = "black";
-        ventana.style.borderWidth = "3px";
-        ventana.style.borderRadius = "12px";
-        ventana.style.width = "300px";
-        ventana.style.height = "50px";
-        ventana.style.position = "absolute";
-
+        // VARIABLES
         mensajeActivo = true;
-        document.body.appendChild(ventana);
+
+        // ENTRADA
+        CrearMensajeFlotante(color, texto, segundosVisible);
+
+        // PROCESO - SALIDA
+        segundosVisible = segundosVisible * 1000;
 
         setTimeout(() => {
-            document.body.removeChild(ventana);
-
-            setTimeout(() => {
-                mensajeActivo = false;
-            }, 200);
-        }, segundosVisible);
+            mensajeActivo = false;
+        }, segundosVisible + 200);
     }
-};
+}
 
 function CrearVentanaClicks() {
     // ENTRADA
@@ -187,16 +245,17 @@ function CrearVentanaClicks() {
 botonComenzarPartida.addEventListener("click", function() {
     if (!hayPartidaComenzada) {
         hayPartidaComenzada = true;
+        CrearMensajeClick("gold", "GENERANDO PARTIDA...", 1);
         generarRonda();
     } else {
-        CrearMensajeFlotante("gold", "SI HAY PARTIDA COMENZADA", 1);
+        CrearMensajeClick("gold", "SI HAY PARTIDA COMENZADA", 1);
     }
 });
 
 coloresClickeados.forEach((cc) => {
     cc.addEventListener("click", function() {
         if (!hayPartidaComenzada) {
-            CrearMensajeFlotante("red", "NO HAY PARTIDA COMENZADA", 1);
+            CrearMensajeClick("red", "NO HAY PARTIDA COMENZADA", 1);
             return;
         } 
 
@@ -204,9 +263,8 @@ coloresClickeados.forEach((cc) => {
 
         if (rondaComenzada) {
             detectarClicksColores(colorClickeado);
-            ActualizarNumeroClicks();
         } else {
-            CrearMensajeFlotante("red", "LA RONDA NO HA COMENZADO TODAVIA", 1);
+            CrearMensajeClick("red", "LA RONDA NO HA COMENZADO TODAVIA", 1);
         }
     });
 });
